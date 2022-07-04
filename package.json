@@ -7,6 +7,11 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.4"
+    "nuxt": "3.0.0-rc.4",
+    "sass": "^1.53.0",
+    "sass-loader": "^10.3.0"
+  },
+  "dependencies": {
+    "vue-material-design-icons": "^5.1.1"
   }
 }
