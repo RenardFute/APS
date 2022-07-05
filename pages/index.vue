@@ -27,8 +27,9 @@
     },
     methods: {
        addFlight() {
-          this.flights.push(document.getElementById("flight-input").value)
-          this.sortFlights()
+        this.flights.push(document.getElementById("flight-input").value)
+        console.log("Adding flight: " + document.getElementById("flight-input").value)
+        this.sortFlights()
        },
       sortFlights(){
          this.flights.sort((a, b) => {

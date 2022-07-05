@@ -17,12 +17,12 @@ export default defineEventHandler((event) => {
         .then(res => res.json())
         .then(json => {
             let index = json.pagination.count == 2 ? 0 : 0;
-            if(json.data[index].arrival.actual == null){
-                return json.data[index].arrival.estimated;
+            if(json.data[index].flight_status == "active"){
+                if(new Date(json.data[index].arrival.estimated).getTime() > new Date(json.data[index].arrival.scheduled).getTime()){
+                    return "late";
+                }
             }
-            else {
-                return json.data[index].arrival.actual;
-            }
+            return json.data[index].flight_status;
         })
         .catch(err => console.error('Error while fetching flight info ('+ iata + ') :' + err))
 })

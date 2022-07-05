@@ -60,6 +60,7 @@
           </div>
         </div>
       </div>
+      <FlightProgressBar :iata="iata"/>
     </div>
   </div>
 </template>
@@ -77,10 +78,14 @@ const props = defineProps({
   iata: {
     type: String,
     required: true
+  },
+  date: {
+    type: String,
+    required: false
   }
 })
 
-const {pending, refresh, data: infos} = await useFetch('/api/flight/data?iata='+props.iata)
+const {pending, refresh, data: infos} = await useFetch('/api/flight/data?iata='+props.iata + (props.date ? '&date='+props.date : ''))
 
 watch(props, (newProps) => {
   refresh();
@@ -138,7 +143,14 @@ function getEstimatedLandingTime(){
   if(infos.value.arrival.estimated == null){
     return "--:--"
   }
-  const date = new Date(infos.value.arrival.estimated);
+  let dateT = new Date(infos.value.arrival.estimated).getTime();
+  if(infos.value.arrival.delay != null){
+    dateT += infos.value.arrival.delay * 60 * 1000;
+  }
+  else if(infos.value.departure.delay != null){
+    dateT += infos.value.departure.delay * 60 * 1000;
+  }
+  const date = new Date(dateT);
   let hours = date.getUTCHours();
   if (hours < 10){
     hours = "0"+hours;
@@ -161,7 +173,7 @@ function getAirlineLogoURL(){
     border-radius: 10px;
     padding: 10px;
     display: flex;
-    position: relative;
+    position: absolute;
     box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.2);
     align-items: center;
   }
@@ -178,7 +190,6 @@ function getAirlineLogoURL(){
   }
 
   #info-container {
-    width: 100%;
 
     #flight-iata-container{
       display: flex;
@@ -200,6 +211,7 @@ function getAirlineLogoURL(){
       .flight-detail {
         display: flex;
         align-items: center;
+        justify-content: center;
 
         .icon {
           margin: 2px;
